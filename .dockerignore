@@ -1,0 +1,26 @@
+# 依赖与构建产物（镜像内重新安装/构建，避免把本机几万个文件塞进构建上下文）
+**/node_modules
+**/dist
+**/target
+
+# 内置 Maven 发行包（构建镜像自带 Maven，不需要本机这份）
+rental-server/.mvn/apache-maven-*
+
+# 版本控制与本地工具
+.git
+.gitignore
+.workbuddy-ai
+.idea
+*.iml
+.vscode
+
+# 文档与脚本
+docs
+scripts
+*.md
+start-all.bat
+
+# 日志与系统文件
+*.log
+**/.DS_Store
+**/Thumbs.db

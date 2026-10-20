@@ -1,0 +1,22 @@
+# 依赖与构建产物
+node_modules/
+dist/
+target/
+
+# 本地环境变量（含数据库密码，不入库）
+.env
+
+# 内置 Maven（体积较大不入库，保留 .mvn/settings.xml 与 mvnw.cmd）
+rental-server/.mvn/apache-maven-*/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# 日志
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db

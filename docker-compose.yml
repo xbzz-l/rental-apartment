@@ -1,0 +1,145 @@
+# ==========================================================
+# 公寓租房系统 Demo —— 一键部署编排
+#   docker compose up -d --build     首次构建并启动
+#   docker compose ps                查看状态
+#   docker compose logs -f server    跟踪后端日志
+#   docker compose down              停止（加 -v 会连数据一起删）
+#
+# 拓扑：nginx(静态资源 + /api /images 反代) -> server -> mysql
+# 后端与数据库都不映射到宿主机，只有三个前端端口对外。
+# ==========================================================
+
+name: ${COMPOSE_PROJECT_NAME:-rental}
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # ---------------- 数据库 ----------------
+  mysql:
+    image: mysql:8.0
+    container_name: ${COMPOSE_PROJECT_NAME:-rental}-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-root}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE:-rental_db}"
+      TZ: Asia/Shanghai
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+      - "--default-time-zone=+08:00"
+      - "--max-connections=300"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 40s
+    logging: *default-logging
+    networks:
+      - rental-net
+
+  # ---------------- 后端 ----------------
+  server:
+    build:
+      context: .
+      dockerfile: docker/server.Dockerfile
+    image: ${COMPOSE_PROJECT_NAME:-rental}/server:${IMAGE_TAG:-1.0.0}
+    container_name: ${COMPOSE_PROJECT_NAME:-rental}-server
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      TZ: Asia/Shanghai
+      # 覆盖 application.yml 里的 127.0.0.1：容器内必须监听 0.0.0.0，
+      # 否则同网络下的 nginx 无法访问（宿主机端口依然不暴露）
+      SERVER_ADDRESS: 0.0.0.0
+      SERVER_PORT: "8080"
+      # 默认连本编排内的 mysql 服务；多台服务器共用同一个库时，
+      # 在 .env 里把 DB_HOST / DB_PORT 指向那台库即可
+      SPRING_DATASOURCE_URL: "jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/${MYSQL_DATABASE:-rental_db}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true"
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "${MYSQL_ROOT_PASSWORD:-root}"
+      JWT_SECRET: "${JWT_SECRET:-rental-apartment-demo-jwt-secret-2026-abcdefg}"
+      APP_ADMIN_USERNAME: "${ADMIN_USERNAME:-admin}"
+      APP_ADMIN_PASSWORD: "${ADMIN_PASSWORD:-admin123}"
+      JAVA_OPTS: "${JAVA_OPTS:--XX:MaxRAMPercentage=75 -Duser.timezone=Asia/Shanghai}"
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/api/apartments || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    logging: *default-logging
+    networks:
+      - rental-net
+
+  # ---------------- 用户端 H5 ----------------
+  app:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+      args:
+        APP_DIR: rental-app
+    image: ${COMPOSE_PROJECT_NAME:-rental}/app:${IMAGE_TAG:-1.0.0}
+    container_name: ${COMPOSE_PROJECT_NAME:-rental}-app
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "${APP_PORT:-8081}:80"
+    logging: *default-logging
+    networks:
+      - rental-net
+
+  # ---------------- 管理端 ----------------
+  admin:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+      args:
+        APP_DIR: rental-admin
+    image: ${COMPOSE_PROJECT_NAME:-rental}/admin:${IMAGE_TAG:-1.0.0}
+    container_name: ${COMPOSE_PROJECT_NAME:-rental}-admin
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "${ADMIN_PORT:-8082}:80"
+    logging: *default-logging
+    networks:
+      - rental-net
+
+  # ---------------- BI 看板 ----------------
+  bi:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+      args:
+        APP_DIR: rental-bi
+    image: ${COMPOSE_PROJECT_NAME:-rental}/bi:${IMAGE_TAG:-1.0.0}
+    container_name: ${COMPOSE_PROJECT_NAME:-rental}-bi
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "${BI_PORT:-8083}:80"
+    logging: *default-logging
+    networks:
+      - rental-net
+
+volumes:
+  mysql-data:
+    name: ${COMPOSE_PROJECT_NAME:-rental}-mysql-data
+
+networks:
+  rental-net:
+    name: ${COMPOSE_PROJECT_NAME:-rental}-net

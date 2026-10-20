@@ -1,0 +1,194 @@
+/* ============================================================
+   公寓租房 · 管理端  |  三端统一设计令牌 + Element Plus 主题覆写
+   ============================================================ */
+:root {
+  /* 品牌色 */
+  --brand: #2a4fd7;
+  --brand-600: #2443bd;
+  --brand-700: #1d369b;
+  --brand-100: #e7edfe;
+  --brand-050: #f2f5fe;
+  --teal: #12a594;
+  --teal-100: #e1f4f0;
+  --amber: #e8742c;
+  --amber-100: #fcefdf;
+  /* 中性色 */
+  --ink: #0f1b2d;
+  --ink-2: #2a3648;
+  --muted: #6b7787;
+  --faint: #9aa4b2;
+  --line: #e5e8ee;
+  --line-2: #eff1f5;
+  --paper: #f5f6f9;
+  --surface: #ffffff;
+  --danger: #d94a4a;
+  /* 圆角 / 阴影 */
+  --r-sm: 8px;
+  --r: 12px;
+  --r-lg: 16px;
+  --sh-1: 0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --sh-2: 0 6px 20px -6px rgba(16, 24, 40, 0.12), 0 2px 6px rgba(16, 24, 40, 0.05);
+  --sh-brand: 0 8px 20px -8px rgba(42, 79, 215, 0.5);
+  /* 字体 */
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+
+  /* ---- Element Plus 主题变量 ---- */
+  --el-color-primary: var(--brand);
+  --el-color-primary-light-3: #6a86e4;
+  --el-color-primary-light-5: #94a8ec;
+  --el-color-primary-light-7: #becbf4;
+  --el-color-primary-light-8: #d3dcf8;
+  --el-color-primary-light-9: #e7edfe;
+  --el-color-primary-dark-2: var(--brand-600);
+  --el-color-success: var(--teal);
+  --el-color-success-light-9: var(--teal-100);
+  --el-color-warning: var(--amber);
+  --el-color-warning-light-9: var(--amber-100);
+  --el-color-danger: var(--danger);
+  --el-color-info: var(--muted);
+  --el-text-color-primary: var(--ink);
+  --el-text-color-regular: var(--ink-2);
+  --el-text-color-secondary: var(--muted);
+  --el-text-color-placeholder: var(--faint);
+  --el-border-color: var(--line);
+  --el-border-color-light: var(--line-2);
+  --el-border-color-lighter: var(--line-2);
+  --el-border-radius-base: 8px;
+  --el-border-radius-small: 6px;
+  --el-font-family: var(--font-sans);
+  --el-fill-color-blank: var(--surface);
+  --el-bg-color: var(--surface);
+  --el-bg-color-page: var(--paper);
+  --el-box-shadow-light: var(--sh-1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink-2);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* 数字等宽 */
+.stat-value,
+.el-table .cell,
+.el-pagination,
+.el-statistic__number {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Element Plus 组件微调 ---- */
+.el-card {
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1) !important;
+}
+.el-card__header {
+  padding: 14px 18px;
+  font-weight: 700;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-2);
+}
+
+.el-button {
+  font-weight: 600;
+  border-radius: var(--r-sm);
+}
+.el-button--primary {
+  box-shadow: var(--sh-brand);
+}
+
+.el-input__wrapper,
+.el-textarea__inner,
+.el-select__wrapper {
+  border-radius: var(--r-sm);
+  box-shadow: 0 0 0 1px var(--line) inset;
+}
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1px var(--brand) inset !important;
+}
+
+.el-table {
+  --el-table-header-bg-color: var(--paper);
+  --el-table-header-text-color: var(--muted);
+  --el-table-border-color: var(--line-2);
+  --el-table-row-hover-bg-color: var(--brand-050);
+  font-size: 13.5px;
+}
+.el-table th.el-table__cell {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.el-table .el-table__cell {
+  padding: 11px 0;
+}
+
+.el-tag {
+  border-radius: 999px;
+  font-weight: 600;
+  border: none;
+  padding: 0 11px;
+}
+
+.el-dialog,
+.el-drawer {
+  border-radius: var(--r-lg);
+}
+.el-dialog__header {
+  margin-right: 0;
+  padding: 20px 22px 12px;
+  font-weight: 700;
+}
+.el-dialog__title {
+  font-weight: 700;
+  color: var(--ink);
+}
+.el-dialog__body {
+  padding: 8px 22px 4px;
+}
+.el-dialog__footer {
+  padding: 12px 22px 20px;
+}
+
+.el-pagination {
+  --el-pagination-button-bg-color: transparent;
+  font-weight: 600;
+}
+.el-pagination.is-background .el-pager li.is-active {
+  box-shadow: var(--sh-brand);
+}
+
+.el-message {
+  border-radius: 10px;
+}
+.el-message-box {
+  border-radius: var(--r-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

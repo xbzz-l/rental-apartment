@@ -1,0 +1,43 @@
+server:
+  port: 8080
+  # 只监听本机回环地址：外部（含同一局域网）无法直连后端，
+  # 只有本机运行的 Vite dev server 代理（/api、/images）能访问到。
+  address: 127.0.0.1
+
+spring:
+  application:
+    name: rental-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # createDatabaseIfNotExist：数据库不存在时自动创建 rental_db
+    url: jdbc:mysql://localhost:3306/rental_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+    username: root
+    password: root
+  sql:
+    init:
+      # 每次启动执行建表脚本（脚本使用 IF NOT EXISTS，可重复执行）
+      mode: always
+      schema-locations: classpath:db/schema.sql
+      encoding: UTF-8
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+jwt:
+  # HS256 签名密钥，长度需 >= 32 字节
+  secret: rental-apartment-demo-jwt-secret-2026-abcdefg
+  # 登录态有效期（小时）
+  expire-hours: 72
+
+# 内置管理员账号：仅用于管理端 / BI 看板登录
+# 不写入 user 表，因此 C 端（用户端）的用户体系中不存在管理员
+app:
+  admin:
+    username: admin
+    password: admin123
+
+# Knife4j 在线接口文档：http://localhost:8080/doc.html
+knife4j:
+  enable: true

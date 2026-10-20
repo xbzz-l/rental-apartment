@@ -1,0 +1,207 @@
+/* ============================================================
+   公寓租房 · 用户端  |  三端统一设计令牌
+   ------------------------------------------------------------
+   品牌蓝 / 数据青 / 价格暖橙，深墨底，统一圆角与阴影
+   ============================================================ */
+:root {
+  /* 品牌色 */
+  --brand: #2a4fd7;
+  --brand-600: #2443bd;
+  --brand-700: #1d369b;
+  --brand-100: #e7edfe;
+  --brand-050: #f2f5fe;
+  --teal: #12a594;
+  --teal-100: #e1f4f0;
+  --amber: #e8742c;
+  --amber-100: #fcefdf;
+  /* 中性色 */
+  --ink: #0f1b2d;
+  --ink-2: #2a3648;
+  --muted: #6b7787;
+  --faint: #9aa4b2;
+  --line: #e5e8ee;
+  --line-2: #eff1f5;
+  --paper: #f5f6f9;
+  --surface: #ffffff;
+  --danger: #d94a4a;
+  /* 圆角 / 阴影 */
+  --r-sm: 8px;
+  --r: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --sh-1: 0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --sh-2: 0 6px 20px -6px rgba(16, 24, 40, 0.12), 0 2px 6px rgba(16, 24, 40, 0.05);
+  --sh-brand: 0 10px 24px -10px rgba(42, 79, 215, 0.55);
+  /* 字体：拉丁/数字用 Plus Jakarta Sans，中文回落到系统字族 */
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-num: "Plus Jakarta Sans", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* ---- Vant 主题变量覆写 ---- */
+  --van-primary-color: var(--brand);
+  --van-danger-color: var(--danger);
+  --van-success-color: var(--teal);
+  --van-text-color: var(--ink-2);
+  --van-text-color-2: var(--muted);
+  --van-text-color-3: var(--faint);
+  --van-background: var(--paper);
+  --van-background-2: var(--surface);
+  --van-border-color: var(--line);
+  --van-radius-md: var(--r-sm);
+  --van-radius-lg: var(--r);
+  --van-nav-bar-background: var(--surface);
+  --van-nav-bar-title-text-color: var(--ink);
+  --van-nav-bar-title-font-size: 17px;
+  --van-nav-bar-icon-color: var(--ink-2);
+  --van-tabbar-item-active-color: var(--brand);
+  --van-tabbar-item-text-color: var(--faint);
+  --van-cell-background: var(--surface);
+  --van-field-label-color: var(--ink-2);
+  --van-button-primary-background: var(--brand);
+  --van-button-primary-border-color: var(--brand);
+  --van-tag-primary-color: var(--brand);
+  --van-tag-success-color: var(--teal);
+  --van-tabs-bottom-bar-color: var(--brand);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink-2);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* 整页锁一屏，滚动交给 #app 内的 .app-scroll */
+  overflow: hidden;
+}
+
+/*
+  手机视口容器：
+  - 高度锁死一屏，内部 .app-scroll 滚动，避免页面整体被撑长后露出背景色差
+  - 桌面浏览器下限制为 430px 居中「手机框」（见下方媒体查询）
+*/
+#app {
+  position: relative;
+  height: 100%;
+  background: var(--paper);
+  overflow: hidden;
+}
+
+.app-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  /* 细滚动条，不抢视觉 */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 27, 45, 0.18) transparent;
+}
+.app-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.app-scroll::-webkit-scrollbar-thumb {
+  background: rgba(15, 27, 45, 0.16);
+  border-radius: 999px;
+}
+.app-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 数字统一使用等宽数字，价格/KPI 更整齐 */
+.num,
+.apt-rent,
+.head-rent,
+.hero-count b,
+.stat-value {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* 键盘可达性 */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 品牌屋顶标志（三端通用） */
+.roof-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+}
+
+/* 显示底部导航的页面预留 Tabbar 高度 */
+.app-scroll.with-tabbar {
+  padding-bottom: 62px;
+}
+
+/* ---- 通用微调 ---- */
+.van-nav-bar::after {
+  border-color: var(--line) !important;
+}
+.van-nav-bar__title {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+.van-tabbar {
+  box-shadow: 0 -1px 0 var(--line);
+}
+.van-tabbar-item--active {
+  font-weight: 600;
+}
+.van-cell-group--inset {
+  margin: 0 12px 12px !important;
+  border-radius: var(--r) !important;
+  overflow: hidden;
+  box-shadow: var(--sh-1);
+}
+.van-cell {
+  font-size: 14px;
+}
+.van-tag {
+  border-radius: 999px;
+  padding: 1px 9px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/*
+  桌面浏览器：模拟手机 App 外观
+  - 居中的 430px 手机框，框外为中性桌面底色
+  - transform 让 #app 成为内部 position:fixed 元素的「包含块」，
+    于是 van-nav-bar / van-tabbar / 下拉筛选 / 底部弹层 / 遮罩
+    都会自动收进手机框内，无需逐个组件覆写宽度
+*/
+@media (min-width: 431px) {
+  body {
+    background: #e6e9ef;
+  }
+  #app {
+    max-width: 430px;
+    margin: 0 auto;
+    transform: translateZ(0);
+    box-shadow: 0 0 44px rgba(15, 27, 45, 0.16);
+  }
+}
+
+/* 尊重系统"减少动态效果"偏好 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
